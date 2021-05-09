@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Darien Imai <darien@dpsi.jp>
+Date: Sun, 9 May 2021 13:00:25 -0700
+Subject: [PATCH] Disable sand duping fix.
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java b/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
+index 62d8b53c024888aa43b8fddf8a475dfb8284a4cc..3655ae2613ae5c8a535d0ff05c3784597f3f9983 100644
+--- a/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
++++ b/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
+@@ -103,11 +103,11 @@ public class EntityFallingBlock extends Entity {
+ 
+     @Override
+     public void tick() {
+-        // Paper start - fix sand duping
+-        if (this.dead) {
+-            return;
+-        }
+-        // Paper end - fix sand duping
++//        // Paper start - fix sand duping
++//        if (this.dead) {
++//            return;
++//        }
++//        // Paper end - fix sand duping
+         if (this.block.isAir()) {
+             this.die();
+         } else {
+@@ -130,11 +130,11 @@ public class EntityFallingBlock extends Entity {
+ 
+             this.move(EnumMoveType.SELF, this.getMot());
+ 
+-            // Paper start - fix sand duping
+-            if (this.dead) {
+-                return;
+-            }
+-            // Paper end - fix sand duping
++//            // Paper start - fix sand duping
++//            if (this.dead) {
++//                return;
++//            }
++//            // Paper end - fix sand duping
+ 
+             // Paper start - Configurable EntityFallingBlock height nerf
+             if (this.world.paperConfig.fallingBlockHeightNerf != 0 && this.locY() > this.world.paperConfig.fallingBlockHeightNerf) {
