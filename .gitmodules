@@ -1,3 +1,6 @@
 [submodule "Airplane"]
 	path = Airplane
 	url = https://github.com/Technove/Airplane.git
+[submodule "Tuinity"]
+	path = Tuinity
+	url = git@github.com:Tuinity/Tuinity.git

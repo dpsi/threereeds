@@ -1,75 +1,84 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Paul Sauve <paul@technove.co>
-Date: Wed, 3 Feb 2021 23:02:38 -0600
-Subject: [PATCH] MyAirplaneFork branding
+From: Darien Imai <darien@dpsi.jp>
+Date: Sun, 9 May 2021 11:38:10 -0700
+Subject: [PATCH] threereeds branding.
 
 
 diff --git a/pom.xml b/pom.xml
-index efa2ea6b8422f900643eb2f0f65cf067c034cea3..1cd91deffb55e31f6a1f11af69b1fa3aa17abcf0 100644
+index 642ee96ead8176f5c5a811946b050f4fa5dab6e2..8da0ebf9108f9d34313509d2e098e4a60d1b180b 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -39,8 +39,8 @@
  
      <dependencies>
          <dependency>
--            <groupId>gg.airplane</groupId>
--            <artifactId>airplane-api</artifactId>
-+            <groupId>com.mygroupid</groupId>
-+            <artifactId>myairplanefork-api</artifactId>
+-            <groupId>com.tuinity</groupId>
+-            <artifactId>tuinity-api</artifactId>
++            <groupId>jp.dpsi</groupId>
++            <artifactId>threereeds-api</artifactId>
              <version>${project.version}</version>
              <scope>compile</scope>
          </dependency>
+@@ -205,7 +205,7 @@
+                 <artifactId>gitdescribe-maven-plugin</artifactId>
+                 <version>1.3</version>
+                 <configuration>
+-                    <outputPrefix>git-Tuinity-</outputPrefix> <!-- Tuinity -->
++                    <outputPrefix>git-threereeds-</outputPrefix> <!-- Tuinity threereeds-->
+                     <scmDirectory>..</scmDirectory>
+                 </configuration>
+                 <executions>
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index 5460f57f0473868b3fb09c526a1767f717a2740e..3072ae4ab8fff7e53d1ff8b56fe762d14e3baea8 100644
+index d50b61876f15d95b836b3dd81d9c3492c91a8448..b44552dcf1033a91776d99ce22216d0311502f83 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 @@ -29,8 +29,8 @@ public class PaperVersionFetcher implements VersionFetcher {
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
--        String[] parts = serverVersion.substring("git-Airplane-".length()).split("[-\\s]"); // Tuinity
--        final Component updateMessage = getUpdateStatusMessage("TECHNOVE/Airplane", GITHUB_BRANCH_NAME, parts[0]); // Tuinity
-+        String[] parts = serverVersion.substring("git-MyAirplaneFork-".length()).split("[-\\s]"); // Tuinity // MyAirplaneFork
-+        final Component updateMessage = getUpdateStatusMessage("MyGithubName/MyAirplaneFork", GITHUB_BRANCH_NAME, parts[0]); // Tuinity // MyAirplaneFork
+-        String[] parts = serverVersion.substring("git-Tuinity-".length()).split("[-\\s]"); // Tuinity
+-        final Component updateMessage = getUpdateStatusMessage("Spottedleaf/Tuinity", GITHUB_BRANCH_NAME, parts[0]); // Tuinity
++        String[] parts = serverVersion.substring("git-threereeds-".length()).split("[-\\s]"); // Tuinity // threereeds
++        final Component updateMessage = getUpdateStatusMessage("dpsi/threereeds", GITHUB_BRANCH_NAME, parts[0]); // Tuinity // threereeds
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 26f423d3fdc958764758573043310f84da08a08e..0c013dd8e17e84e9c006d61bbc9d3ca830c1cd6c 100644
+index 6f90a4182e008b49a4b3328e569311382e4bec0d..b6084fb028c4c213820400ab88700d1e2776b3c1 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1650,7 +1650,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
      }
  
      public String getServerModName() {
--        return "Airplane"; // Airplane // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return "MyAirplaneFork"; // MyAirplaneFork // Airplane // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        return "Tuinity"; // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return "threereeds"; // threereeds // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
      public CrashReport b(CrashReport crashreport) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index eab5bd32860d136864ca8f74be264236cf530910..6263352e543449fe1f62b7576f9b896e96caec4f 100644
+index 507c5255542ba1b958470b4db2c35b1b0b779f17..dd82cbf6d9f08fef7ee9d4a590a63ec862b884af 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
--    private final String serverName = "Airplane"; // Paper // Tuinity // Airplane
-+    private final String serverName = "MyAirplaneFork"; // Paper // Tuinity // Airplane // MyAirplaneFork
+-    private final String serverName = "Tuinity"; // Paper // Tuinity
++    private final String serverName = "threereeds"; // Paper // Tuinity // threereeds
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 1788d79ea489e446d3d9f541693d4ba3dfc26015..0e18f778a434b8b22bb595f06cc6ef7833e64489 100644
+index 001b1e5197eaa51bfff9031aa6c69876c9a47960..c6e17cea6886a3ffbd0985e6af745e8aaaf284fe 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
      public static String getBukkitVersion() {
          String result = "Unknown-Version";
  
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/gg.airplane/airplane-api/pom.properties"); // Tuinity // Airplane
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.mygroupid/myairplanefork-api/pom.properties"); // Tuinity // Airplane
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/com.tuinity/tuinity-api/pom.properties"); // Tuinity
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/jp.dpsi/threereeds-api/pom.properties"); // Tuinity
          Properties properties = new Properties();
  
          if (stream != null) {
