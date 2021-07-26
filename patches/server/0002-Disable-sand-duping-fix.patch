@@ -4,41 +4,24 @@ Date: Sun, 9 May 2021 13:00:25 -0700
 Subject: [PATCH] Disable sand duping fix.
 
 
-diff --git a/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java b/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
-index 2a61c24dd26edf4c72e977c6024fe233bab08a2f..01a7ea34eafb666d7c37741e122616281e31d26b 100644
---- a/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
-+++ b/src/main/java/net/minecraft/world/entity/item/EntityFallingBlock.java
-@@ -105,11 +105,11 @@ public class EntityFallingBlock extends Entity {
+diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+index 8336ea928faa92c6f58f8cdfb9faf1d8e26c9ccf..69280a3bae5333bacdbbfc47eb447b2143f5c352 100644
+--- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -106,11 +106,11 @@ public class FallingBlockEntity extends Entity {
  
      @Override
      public void tick() {
 -        // Paper start - fix sand duping
--        if (this.dead) {
+-        if (this.isRemoved()) {
 -            return;
 -        }
 -        // Paper end - fix sand duping
 +//        // Paper start - fix sand duping
-+//        if (this.dead) {
++//        if (this.isRemoved()) {
 +//            return;
 +//        }
 +//        // Paper end - fix sand duping
-         if (this.block.isAir()) {
-             this.die();
+         if (this.blockState.isAir()) {
+             this.discard();
          } else {
-@@ -142,11 +142,11 @@ public class EntityFallingBlock extends Entity {
- 
-             this.move(EnumMoveType.SELF, this.getMot());
- 
--            // Paper start - fix sand duping
--            if (this.dead) {
--                return;
--            }
--            // Paper end - fix sand duping
-+//            // Paper start - fix sand duping
-+//            if (this.dead) {
-+//                return;
-+//            }
-+//            // Paper end - fix sand duping
- 
-             // Paper start - Configurable EntityFallingBlock height nerf
-             if (this.world.paperConfig.fallingBlockHeightNerf != 0 && this.locY() > this.world.paperConfig.fallingBlockHeightNerf) {

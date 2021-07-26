@@ -5,29 +5,495 @@ Subject: [PATCH] threereeds branding.
 
 
 diff --git a/pom.xml b/pom.xml
-index 642ee96ead8176f5c5a811946b050f4fa5dab6e2..8da0ebf9108f9d34313509d2e098e4a60d1b180b 100644
---- a/pom.xml
+new file mode 100644
+index 0000000000000000000000000000000000000000..fecadb339f6b3232e23d1dc908aed64cd29d3e8c
+--- /dev/null
 +++ b/pom.xml
-@@ -39,8 +39,8 @@
- 
-     <dependencies>
-         <dependency>
--            <groupId>com.tuinity</groupId>
--            <artifactId>tuinity-api</artifactId>
+@@ -0,0 +1,484 @@
++<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
++    <modelVersion>4.0.0</modelVersion>
++    <artifactId>threereeds</artifactId>
++    <packaging>jar</packaging>
++    <version>1.16.5-R0.1-SNAPSHOT</version>
++    <name>threereeds-Server</name>
++    <url>https://github.com/dpsi/threereeds</url>
++
++    <properties>
++        <!-- <skipTests>true</skipTests> Paper - This [was] not going to end well -->
++        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
++        <api.version>unknown</api.version>
++        <bt.name>git</bt.name>
++        <minecraft.version>1.16.5</minecraft.version>
++        <minecraft_version>1_16_R3</minecraft_version>
++        <maven.compiler.source>1.8</maven.compiler.source>
++        <maven.compiler.target>1.8</maven.compiler.target>
++    </properties>
++
++    <parent>
++        <groupId>jp.dpsi</groupId>
++        <artifactId>threereeds-parent</artifactId>
++        <version>dev-SNAPSHOT</version>
++        <relativePath>../pom.xml</relativePath>
++    </parent>
++
++    <dependencyManagement>
++        <dependencies>
++            <dependency>
++                <groupId>org.apache.logging.log4j</groupId>
++                <artifactId>log4j-bom</artifactId>
++                <version>2.11.2</version>
++                <type>pom</type>
++                <scope>import</scope>
++            </dependency>
++        </dependencies>
++    </dependencyManagement>
++
++    <dependencies>
++        <dependency>
 +            <groupId>jp.dpsi</groupId>
 +            <artifactId>threereeds-api</artifactId>
-             <version>${project.version}</version>
-             <scope>compile</scope>
-         </dependency>
-@@ -205,7 +205,7 @@
-                 <artifactId>gitdescribe-maven-plugin</artifactId>
-                 <version>1.3</version>
-                 <configuration>
--                    <outputPrefix>git-Tuinity-</outputPrefix> <!-- Tuinity -->
++            <version>${project.version}</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>com.destroystokyo.paper</groupId>
++            <artifactId>paper-mojangapi</artifactId>
++            <version>${project.version}</version>
++            <scope>compile</scope>
++        </dependency>
++        <!-- Tuinity start - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
++        <dependency>
++            <groupId>io.netty</groupId>
++            <artifactId>netty-all</artifactId>
++            <version>4.1.50.Final</version>
++        </dependency>
++        <!-- Tuinity end - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
++        <dependency>
++            <groupId>io.papermc</groupId>
++            <artifactId>minecraft-server</artifactId>
++            <version>${minecraft.version}-SNAPSHOT</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>net.minecrell</groupId>
++            <artifactId>terminalconsoleappender</artifactId>
++            <version>1.2.0</version>
++        </dependency>
++        <dependency>
++            <groupId>org.jline</groupId>
++            <artifactId>jline-terminal-jansi</artifactId>
++            <version>3.12.1</version>
++            <scope>runtime</scope>
++        </dependency>
++        <!--
++          Required to add the missing Log4j2Plugins.dat file from log4j-core
++          which has been removed by Mojang. Without it, log4j has to classload
++          all its classes to check if they are plugins.
++          Scanning takes about 1-2 seconds so adding this speeds up the server start.
++        -->
++        <dependency>
++            <groupId>org.apache.logging.log4j</groupId>
++            <artifactId>log4j-core</artifactId>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.logging.log4j</groupId>
++            <artifactId>log4j-api</artifactId>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.logging.log4j</groupId>
++            <artifactId>log4j-iostreams</artifactId>
++            <scope>compile</scope>
++        </dependency>
++        <!-- Paper - Async loggers -->
++        <dependency>
++            <groupId>com.lmax</groupId>
++            <artifactId>disruptor</artifactId>
++            <version>3.4.2</version>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.ow2.asm</groupId>
++            <artifactId>asm</artifactId>
++            <version>9.1</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <!-- wrapper to use either java 8 sun cleaner or java9+ official cleaner -->
++            <groupId>co.aikar</groupId>
++            <artifactId>cleaner</artifactId>
++            <version>1.0-SNAPSHOT</version>
++        </dependency>
++        <!-- Tuinity - fix compile issue (cannot see new api) by moving netty include BEFORE server jar -->
++        <!-- deprecated API depend -->
++        <dependency>
++            <groupId>com.googlecode.json-simple</groupId>
++            <artifactId>json-simple</artifactId>
++            <version>1.1.1</version>
++            <scope>compile</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.xerial</groupId>
++            <artifactId>sqlite-jdbc</artifactId>
++            <version>3.34.0</version>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>mysql</groupId>
++            <artifactId>mysql-connector-java</artifactId>
++            <version>8.0.23</version>
++            <scope>runtime</scope>
++        </dependency>
++        <!-- add these back in as they are not exposed by the API -->
++        <dependency>
++            <groupId>org.apache.maven</groupId>
++            <artifactId>maven-resolver-provider</artifactId>
++            <version>3.8.1</version>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.maven.resolver</groupId>
++            <artifactId>maven-resolver-connector-basic</artifactId>
++            <version>1.6.2</version>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.maven.resolver</groupId>
++            <artifactId>maven-resolver-transport-http</artifactId>
++            <version>1.6.2</version>
++            <scope>runtime</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.apache.logging.log4j</groupId>
++            <artifactId>log4j-slf4j-impl</artifactId>
++            <!--<version>2.8.1</version>--> <!--handled by bom-->
++            <scope>runtime</scope>
++            <exclusions>
++                <!-- included in minecraft-server -->
++                <exclusion>
++                    <groupId>org.apache.logging.log4j</groupId>
++                    <artifactId>log4j-api</artifactId>
++                </exclusion>
++            </exclusions>
++        </dependency>
++        <!-- testing -->
++        <dependency>
++            <groupId>junit</groupId>
++            <artifactId>junit</artifactId>
++            <version>4.13.1</version>
++            <scope>test</scope>
++        </dependency>
++        <dependency>
++            <groupId>org.hamcrest</groupId>
++            <artifactId>hamcrest-library</artifactId>
++            <version>1.3</version>
++            <scope>test</scope>
++        </dependency>
++        <!-- for vanilla goal scanning -->
++        <dependency>
++            <groupId>io.github.classgraph</groupId>
++            <artifactId>classgraph</artifactId>
++            <version>4.8.47</version>
++            <scope>test</scope>
++        </dependency>
++        <!-- for optimized protocol handling -->
++        <dependency>
++            <groupId>com.velocitypowered</groupId>
++            <artifactId>velocity-native</artifactId>
++            <version>1.1.0-SNAPSHOT</version>
++            <scope>compile</scope>
++        </dependency>
++    </dependencies>
++
++    <!-- This builds a completely 'ready to start' jar with all dependencies inside -->
++    <build>
++        <finalName>threereeds-${minecraft.version}</finalName>
++        <defaultGoal>install</defaultGoal> <!-- Paper -->
++        <plugins>
++            <plugin>
++                <groupId>com.lukegb.mojo</groupId>
++                <artifactId>gitdescribe-maven-plugin</artifactId>
++                <version>1.3</version>
++                <configuration>
 +                    <outputPrefix>git-threereeds-</outputPrefix> <!-- Tuinity threereeds-->
-                     <scmDirectory>..</scmDirectory>
-                 </configuration>
-                 <executions>
++                    <scmDirectory>..</scmDirectory>
++                </configuration>
++                <executions>
++                    <execution>
++                        <phase>compile</phase>
++                        <goals>
++                            <goal>gitdescribe</goal>
++                        </goals>
++                    </execution>
++                </executions>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-jar-plugin</artifactId>
++                <version>3.2.0</version>
++                <configuration>
++                    <forceCreation>true</forceCreation> <!-- Required to prevent shading the jar multiple times -->
++                    <archive>
++                        <manifest>
++                            <addDefaultEntries>false</addDefaultEntries>
++                        </manifest>
++                        <manifestEntries>
++                            <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
++                            <Implementation-Title>CraftBukkit</Implementation-Title>
++                            <!--suppress MavenModelInspection -->
++                            <Implementation-Version>${describe}</Implementation-Version>
++                            <Implementation-Vendor>${maven.build.timestamp}</Implementation-Vendor>
++                            <Specification-Title>Bukkit</Specification-Title>
++                            <Specification-Version>${api.version}</Specification-Version>
++                            <Specification-Vendor>Bukkit Team</Specification-Vendor>
++                            <Multi-Release>true</Multi-Release>
++                        </manifestEntries>
++                        <manifestSections>
++                            <manifestSection>
++                                <name>net/bukkit/</name>
++                                <manifestEntries>
++                                    <Sealed>true</Sealed>
++                                </manifestEntries>
++                            </manifestSection>
++                            <manifestSection>
++                                <name>com/bukkit/</name>
++                                <manifestEntries>
++                                    <Sealed>true</Sealed>
++                                </manifestEntries>
++                            </manifestSection>
++                            <manifestSection>
++                                <name>org/bukkit/</name>
++                                <manifestEntries>
++                                    <Sealed>true</Sealed>
++                                </manifestEntries>
++                            </manifestSection>
++                        </manifestSections>
++                    </archive>
++                </configuration>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-shade-plugin</artifactId>
++                <version>3.2.3</version>
++                <executions>
++                    <execution>
++                        <phase>package</phase>
++                        <goals>
++                            <goal>shade</goal>
++                        </goals>
++                        <configuration>
++                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation> <!-- Paper -->
++                            <createSourcesJar>${shadeSourcesJar}</createSourcesJar>
++                            <filters>
++                                <filter>
++                                    <artifact>io.papermc:minecraft-server</artifact>
++                                    <excludes>
++                                        <exclude>com/google/common/**</exclude>
++                                        <exclude>com/google/gson/**</exclude>
++                                        <exclude>com/google/thirdparty/**</exclude>
++                                        <!-- paper -->
++                                        <exclude>io/netty/**</exclude>
++                                        <exclude>META-INF/native/libnetty*</exclude>
++                                        <exclude>com/mojang/brigadier/**</exclude>
++                                        <exclude>META-INF/MANIFEST.MF</exclude>
++                                        <exclude>com/mojang/authlib/yggdrasil/YggdrasilGameProfileRepository.class</exclude>
++                                        <exclude>com/mojang/datafixers/util/Either*</exclude>
++                                        <exclude>org/apache/logging/log4j/**</exclude>
++                                        <exclude>META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat</exclude>
++                                    </excludes>
++                                </filter>
++                                <filter>
++                                    <artifact>org.eclipse.sisu:org.eclipse.sisu.inject</artifact>
++                                    <excludes>
++                                        <exclude>META-INF/services/javax.annotation.processing.Processor</exclude>
++                                    </excludes>
++                                </filter>
++                            </filters>
++                            <relocations>
++                                <!-- Cannot be relocated as it breaks translation property keys -->
++                                <!--
++                                <relocation>
++                                    <pattern>joptsimple</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.joptsimple</shadedPattern>
++                                </relocation>
++                                -->
++                                <relocation>
++                                    <pattern>jline</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
++                                </relocation>
++                                <!-- Paper - Don't relocate fastutil in order to prevent api breakage -->
++                                <!--<relocation>-->
++                                    <!--<pattern>it.unimi</pattern>-->
++                                    <!--<shadedPattern>org.bukkit.craftbukkit.libs.it.unimi</shadedPattern>-->
++                                <!--</relocation>-->
++                                <relocation>
++                                    <pattern>org.apache.commons.codec</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.codec</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.apache.commons.io</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.io</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.apache.commons.lang3</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.commons.lang3</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.apache.http</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.http</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.apache.maven</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.apache.maven</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.codehaus.plexus</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.codehaus.plexus</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.eclipse.aether</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.eclipse.aether</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.eclipse.sisu</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.eclipse.sisu</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.objectweb.asm</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.objectweb.asm</shadedPattern>
++                                </relocation>
++                                <relocation>
++                                    <pattern>org.bukkit.craftbukkit</pattern>
++                                    <shadedPattern>org.bukkit.craftbukkit.v${minecraft_version}</shadedPattern>
++                                    <excludes>
++                                        <exclude>org.bukkit.craftbukkit.Main*</exclude>
++                                    </excludes>
++                                </relocation>
++                                <relocation>
++                                    <pattern>com/mojang/math/(.+/)*(.*)</pattern>
++                                    <shadedPattern>net/minecraft/server/v${minecraft_version}/$2</shadedPattern>
++                                    <rawString>true</rawString>
++                                </relocation>
++                                <relocation>
++                                    <pattern>net/minecraft/(.+/)*(.*)</pattern>
++                                    <shadedPattern>net/minecraft/server/v${minecraft_version}/$2</shadedPattern>
++                                    <rawString>true</rawString>
++                                </relocation>
++                            </relocations>
++                            <transformers>
++                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
++                                    <resource>META-INF/services/java.sql.Driver</resource>
++                                </transformer>
++                                <transformer implementation="com.github.edwgiz.maven_shade_plugin.log4j2_cache_transformer.PluginsCacheFileTransformer" />
++                            </transformers>
++                        </configuration>
++                    </execution>
++                </executions>
++                <dependencies>
++                    <dependency>
++                        <groupId>com.github.edwgiz</groupId>
++                        <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
++                        <version>2.13.1</version>
++                    </dependency>
++                </dependencies>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-compiler-plugin</artifactId>
++                <version>3.8.1</version>
++                <dependencies>
++                    <dependency>
++                        <groupId>org.codehaus.plexus</groupId>
++                        <artifactId>plexus-compiler-eclipse</artifactId>
++                        <version>2.8.8</version>
++                    </dependency>
++                    <dependency>
++                        <groupId>org.eclipse.jdt</groupId>
++                        <artifactId>ecj</artifactId>
++                        <version>3.24.0</version>
++                    </dependency>
++                </dependencies>
++            </plugin>
++            <plugin>
++                <groupId>org.apache.maven.plugins</groupId>
++                <artifactId>maven-surefire-plugin</artifactId>
++                <version>2.12.4</version>
++                <configuration>
++                    <workingDirectory>${basedir}/target/test-server</workingDirectory>
++                    <excludes>
++                        <exclude>org/bukkit/craftbukkit/inventory/ItemStack*Test.java</exclude>
++                    </excludes>
++                </configuration>
++            </plugin>
++        </plugins>
++    </build>
++
++    <profiles>
++        <profile>
++            <id>shadeSourcesJar</id>
++            <properties>
++                <shadeSourcesJar>true</shadeSourcesJar>
++                <shadeSourcesContent>true</shadeSourcesContent>
++            </properties>
++        </profile>
++        <profile>
++            <id>development</id>
++            <properties>
++                <skipTests>false</skipTests>
++            </properties>
++            <build>
++                <plugins>
++                    <plugin>
++                        <groupId>org.apache.maven.plugins</groupId>
++                        <artifactId>maven-checkstyle-plugin</artifactId>
++                        <version>3.1.1</version>
++                        <executions>
++                            <execution>
++                                <phase>process-classes</phase>
++                                <goals>
++                                    <goal>check</goal>
++                                </goals>
++                            </execution>
++                        </executions>
++                        <configuration>
++                            <configLocation>checkstyle.xml</configLocation>
++                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
++                        </configuration>
++                        <dependencies>
++                            <dependency>
++                                <groupId>com.puppycrawl.tools</groupId>
++                                <artifactId>checkstyle</artifactId>
++                                <version>8.39</version>
++                            </dependency>
++                        </dependencies>
++                    </plugin>
++                    <plugin>
++                        <groupId>org.codehaus.mojo</groupId>
++                        <artifactId>animal-sniffer-maven-plugin</artifactId>
++                        <version>1.19</version>
++                        <executions>
++                            <execution>
++                                <phase>process-classes</phase>
++                                <goals>
++                                    <goal>check</goal>
++                                </goals>
++                            </execution>
++                        </executions>
++                        <configuration>
++                            <signature>
++                                <groupId>org.codehaus.mojo.signature</groupId>
++                                <artifactId>java18</artifactId>
++                                <version>1.0</version>
++                            </signature>
++                        </configuration>
++                    </plugin>
++                </plugins>
++            </build>
++        </profile>
++    </profiles>
++</project>
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 index d50b61876f15d95b836b3dd81d9c3492c91a8448..b44552dcf1033a91776d99ce22216d0311502f83 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
@@ -44,27 +510,27 @@ index d50b61876f15d95b836b3dd81d9c3492c91a8448..b44552dcf1033a91776d99ce22216d03
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 6f90a4182e008b49a4b3328e569311382e4bec0d..b6084fb028c4c213820400ab88700d1e2776b3c1 100644
+index f25bb4214cffd0050241ea229b6acb0c16b2b0a5..6b58919e6e24122a0936aaf26812ede0315598ef 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1650,7 +1650,7 @@ public abstract class MinecraftServer extends IAsyncTaskHandlerReentrant<TickTas
-     }
+@@ -1716,7 +1716,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
+     @DontObfuscate
      public String getServerModName() {
--        return "Tuinity"; // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        return "Tuinity"; // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
 +        return "threereeds"; // threereeds // Tuinity //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
-     public CrashReport b(CrashReport crashreport) {
+     public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 507c5255542ba1b958470b4db2c35b1b0b779f17..dd82cbf6d9f08fef7ee9d4a590a63ec862b884af 100644
+index 1ec307d705087eec9d867f9f8e8858ac388f3846..1a134acf5ad89a7b960d6f068bc311ac52f29904 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
+@@ -239,7 +239,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
--    private final String serverName = "Tuinity"; // Paper // Tuinity
+-    private final String serverName = "Tuinity"; // Tuinity // Paper
 +    private final String serverName = "threereeds"; // Paper // Tuinity // threereeds
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();

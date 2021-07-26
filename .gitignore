@@ -1,8 +1,10 @@
 threereeds-API
 threereeds-Server
 
-last-airplane
+last-tuinity
 build/
 .gradle/
 .idea/
+run/
+
 launcher-*.jar
