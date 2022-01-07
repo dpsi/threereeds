@@ -1,51 +1,67 @@
-import xyz.jpenilla.toothpick.gitCmd
-import xyz.jpenilla.toothpick.toothpick
+import io.papermc.paperweight.util.constants.*
 
 plugins {
-    `java-library`
-    id("xyz.jpenilla.toothpick") version "1.0.0-SNAPSHOT"
+    java
+    `maven-publish`
+    id("com.github.johnrengelman.shadow") version "7.1.1" apply false
+    id("io.papermc.paperweight.patcher") version "1.3.3"
 }
 
-toothpick {
-    forkName = "threereeds"
-    groupId = "jp.dpsi"
-    val versionTag = System.getenv("BUILD_NUMBER")
-        ?: "\"${gitCmd("rev-parse", "--short", "HEAD").output}\""
-    forkVersion = "git-$forkName-$versionTag"
-    forkUrl = "https://github.com/dpsi/threereeds"
-
-    minecraftVersion = "1.16.5"
-    nmsPackage = "1_16_R3"
-    nmsRevision = "R0.1-SNAPSHOT"
-
-    upstream = "Tuinity"
-    upstreamBranch = "origin/master"
-
-    paperclipName = "launcher-threereeds"
-
-    server {
-        project = project(":$forkNameLowercase-server")
-        patchesDir = rootProject.projectDir.resolve("patches/server")
+repositories {
+    mavenCentral()
+    maven("https://papermc.io/repo/repository/maven-public/") {
+        content { onlyForConfigurations(PAPERCLIP_CONFIG) }
     }
-    api {
-        project = project(":$forkNameLowercase-api")
-        patchesDir = rootProject.projectDir.resolve("patches/api")
+}
+
+dependencies {
+    remapper("net.fabricmc:tiny-remapper:0.7.0:fat")
+    decompiler("net.minecraftforge:forgeflower:1.5.498.22")
+    paperclip("io.papermc:paperclip:3.0.2")
+}
+
+allprojects {
+    apply(plugin = "java")
+    apply(plugin = "maven-publish")
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
 }
 
 subprojects {
-    repositories {
-        mavenCentral()
-        maven("https://repo.aikar.co/content/groups/aikar/")
-        maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
-        maven("https://libraries.minecraft.net")
-        maven("https://jitpack.io")
-        mavenLocal()
+    tasks.withType<JavaCompile> {
+        options.encoding = Charsets.UTF_8.name()
+        options.release.set(17)
+    }
+    tasks.withType<Javadoc> {
+        options.encoding = Charsets.UTF_8.name()
+    }
+    tasks.withType<ProcessResources> {
+        filteringCharset = Charsets.UTF_8.name()
     }
 
-    java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-        withSourcesJar()
+    repositories {
+        mavenCentral()
+        maven("https://papermc.io/repo/repository/maven-public/")
+    }
+}
+
+paperweight {
+    serverProject.set(project(":threereeds-server"))
+
+    remapRepo.set("https://maven.fabricmc.net/")
+    decompileRepo.set("https://files.minecraftforge.net/maven/")
+
+    usePaperUpstream(providers.gradleProperty("paperRef")) {
+        withPaperPatcher {
+            apiPatchDir.set(layout.projectDirectory.dir("patches/api"))
+            apiOutputDir.set(layout.projectDirectory.dir("threereeds-api"))
+
+            serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
+            serverOutputDir.set(layout.projectDirectory.dir("threereeds-server"))
+        }
     }
 }
