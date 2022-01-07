@@ -8,4 +8,4 @@ pluginManagement {
 
 rootProject.name = "threereeds"
 
-include("threereeds-API", "threereeds-Server")
+include("threereeds-api", "threereeds-server")

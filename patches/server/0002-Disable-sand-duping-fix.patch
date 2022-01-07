@@ -5,10 +5,10 @@ Subject: [PATCH] Disable sand duping fix.
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-index 8336ea928faa92c6f58f8cdfb9faf1d8e26c9ccf..69280a3bae5333bacdbbfc47eb447b2143f5c352 100644
+index 0c94b4cb6ee0c3dffe0b67a2291d0160ae0ef96f..106270fe7613da074f164926c3c55fb22a074722 100644
 --- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-@@ -106,11 +106,11 @@ public class FallingBlockEntity extends Entity {
+@@ -110,11 +110,11 @@ public class FallingBlockEntity extends Entity {
  
      @Override
      public void tick() {
@@ -24,4 +24,4 @@ index 8336ea928faa92c6f58f8cdfb9faf1d8e26c9ccf..69280a3bae5333bacdbbfc47eb447b21
 +//        // Paper end - fix sand duping
          if (this.blockState.isAir()) {
              this.discard();
-         } else {
+         } else if (this.level.isClientSide && this.removeAtMillis > 0L) {

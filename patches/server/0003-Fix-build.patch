@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Darien Imai <darien@dpsi.jp>
+Date: Thu, 6 Jan 2022 16:09:48 -0800
+Subject: [PATCH] Fix build
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index cd74406039704e5a880f00b9b60bb7b1dedc5398..ab13e603144ac6b6dd00ed4d798ae46f5692460d 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -18,8 +18,12 @@ repositories {
+ }
+ 
+ dependencies {
+-    implementation(project(":paper-api"))
+-    implementation(project(":paper-mojangapi"))
++    // threereeds start
++    implementation(project(":threereeds-api"))
++    implementation("io.papermc.paper:paper-mojangapi:1.18-R0.1-SNAPSHOT") {
++        exclude("io.papermc.paper", "paper-api")
++    }
++    // threereeds end
+     // Paper start
+     implementation("org.jline:jline-terminal-jansi:3.21.0")
+     implementation("net.minecrell:terminalconsoleappender:1.3.0")
